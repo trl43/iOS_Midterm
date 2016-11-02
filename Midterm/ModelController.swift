@@ -70,7 +70,14 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         if index == self.pageData.count {
             return nil
         }
-        return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
+        
+        guard let story = viewController.storyboard else {
+            print(#function)
+            print("ERROR: No Storyboard")
+            return nil
+        }
+        
+        return self.viewControllerAtIndex(index, storyboard: story)
     }
 
 }
