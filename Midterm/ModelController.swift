@@ -37,7 +37,12 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         }
 
         // Create a new view controller and pass suitable data.
-        let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
+        // Guard added by TRL43
+        guard let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as? DataViewController else {
+            print(#function)
+            print("ERROR Could not cast UIViewController to DataViewController")
+            return nil
+        }
         dataViewController.dataObject = self.pageData[index]
         return dataViewController
     }
@@ -51,17 +56,37 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     // MARK: - Page View Controller Data Source
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        var index = self.indexOfViewController(viewController as! DataViewController)
+        // Guard added by TRL43
+        guard let dvc = viewController as? DataViewController else {
+            print(#function)
+            print("ERROR: Could not downcast viewController to DataViewController")
+            return nil
+        }
+        
+        var index = self.indexOfViewController(dvc)
         if (index == 0) || (index == NSNotFound) {
             return nil
         }
         
         index -= 1
-        return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
+        // Guard added by TRL43
+        guard let story = viewController.storyboard else {
+            print(#function)
+            print("ERROR: No Storyboard")
+            return nil
+        }
+        return self.viewControllerAtIndex(index, storyboard: story)
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        var index = self.indexOfViewController(viewController as! DataViewController)
+        // Guard added by TRL43
+        guard let dvc = viewController as? DataViewController else {
+            print(#function)
+            print("ERROR: Could not downcast viewController to DataViewController")
+            return nil
+        }
+        
+        var index = self.indexOfViewController(dvc)
         if index == NSNotFound {
             return nil
         }
@@ -71,6 +96,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
             return nil
         }
         
+        // Guard added by TRL43
         guard let story = viewController.storyboard else {
             print(#function)
             print("ERROR: No Storyboard")
