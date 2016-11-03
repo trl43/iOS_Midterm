@@ -2,7 +2,7 @@
 //  RootViewController.swift
 //  Midterm
 //
-//  Created by Locker,Todd on 11/2/16.
+//  Created by Locker,Todd (TRL43) on 11/2/16.
 //  Copyright © 2016 Locker,Todd. All rights reserved.
 //
 
@@ -15,28 +15,45 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view, typically from a nib.
         // Configure the page view controller and add it as a child view controller.
         self.pageViewController = UIPageViewController(transitionStyle: .pageCurl, navigationOrientation: .horizontal, options: nil)
-        self.pageViewController!.delegate = self
+        
+        guard let pvc = self.pageViewController else {
+            print("ERROR: Could not unwrap the pageViewController")
+            return
+        }
+        
+        pvc.delegate = self
+        
+        guard let board = self.storyboard else {
+            print("ERROR: Could not unwrap storyboard")
+            return
+        }
+        
+        guard let ind = self.modelController.viewControllerAtIndex(0, storyboard: board) else {
+            print("ERROR: Could not unwrap viewControllerAtIndex")
+            return
+        }
 
-        let startingViewController: DataViewController = self.modelController.viewControllerAtIndex(0, storyboard: self.storyboard!)!
+        let startingViewController: DataViewController = ind
         let viewControllers = [startingViewController]
-        self.pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: false, completion: {done in })
+        pvc.setViewControllers(viewControllers, direction: .forward, animated: false, completion: {done in })
 
-        self.pageViewController!.dataSource = self.modelController
+        pvc.dataSource = self.modelController
 
-        self.addChildViewController(self.pageViewController!)
-        self.view.addSubview(self.pageViewController!.view)
+        self.addChildViewController(pvc)
+        self.view.addSubview(pvc.view)
 
         // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
         var pageViewRect = self.view.bounds
         if UIDevice.current.userInterfaceIdiom == .pad {
             pageViewRect = pageViewRect.insetBy(dx: 40.0, dy: 40.0)
         }
-        self.pageViewController!.view.frame = pageViewRect
+        pvc.view.frame = pageViewRect
 
-        self.pageViewController!.didMove(toParentViewController: self)
+        pvc.didMove(toParentViewController: self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,7 +67,13 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         if _modelController == nil {
             _modelController = ModelController()
         }
-        return _modelController!
+        
+        guard let mc = _modelController else {
+            print("ERROR: Could not unwrap _modelController")
+            return ModelController()
+        }
+        
+        return mc
     }
 
     var _modelController: ModelController? = nil
@@ -58,30 +81,42 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
     // MARK: - UIPageViewController delegate methods
 
     func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
+        guard let pvc = self.pageViewController else {
+            print("ERROR: No pageViewController")
+            return .none
+        }
+        
         if (orientation == .portrait) || (orientation == .portraitUpsideDown) || (UIDevice.current.userInterfaceIdiom == .phone) {
             // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewControllerSpineLocationMid' in landscape orientation sets the doubleSided property to true, so set it to false here.
-            let currentViewController = self.pageViewController!.viewControllers![0]
+            guard let currentViewController = pvc.viewControllers?[0] else {
+                print("ERROR: Could not get index 0 of viewController")
+                return .none
+            }
             let viewControllers = [currentViewController]
-            self.pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
+            pvc.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
 
-            self.pageViewController!.isDoubleSided = false
+            pvc.isDoubleSided = false
             return .min
         }
 
         // In landscape orientation: Set set the spine location to "mid" and the page view controller's view controllers array to contain two view controllers. If the current page is even, set it to contain the current and next view controllers; if it is odd, set the array to contain the previous and current view controllers.
-        let currentViewController = self.pageViewController!.viewControllers![0] as! DataViewController
-        var viewControllers: [UIViewController]
+        guard let currentViewController = pvc.viewControllers![0] as? DataViewController else {
+            print("ERROR Could not complete cast")
+            return .none
+        }
+        var viewControllers: [UIViewController]? = nil
 
         let indexOfCurrentViewController = self.modelController.indexOfViewController(currentViewController)
         if (indexOfCurrentViewController == 0) || (indexOfCurrentViewController % 2 == 0) {
-            let nextViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerAfter: currentViewController)
-            viewControllers = [currentViewController, nextViewController!]
+            if let nextViewController = self.modelController.pageViewController(pvc, viewControllerAfter: currentViewController) {
+                viewControllers = [currentViewController, nextViewController]
+            }
         } else {
-            let previousViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerBefore: currentViewController)
-            viewControllers = [previousViewController!, currentViewController]
+            if let previousViewController = self.modelController.pageViewController(pvc, viewControllerBefore: currentViewController) {
+                viewControllers = [previousViewController, currentViewController]
+            }
         }
-        self.pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
-
+        pvc.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
         return .mid
     }
 

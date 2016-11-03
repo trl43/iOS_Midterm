@@ -2,7 +2,7 @@
 //  DataViewController.swift
 //  Midterm
 //
-//  Created by Locker,Todd on 11/2/16.
+//  Created by Locker,Todd (TRL43) on 11/2/16.
 //  Copyright © 2016 Locker,Todd. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import UIKit
 
 class DataViewController: UIViewController {
 
-    @IBOutlet weak var dataLabel: UILabel!
+    @IBOutlet weak var dataLabel: UILabel?
     var dataObject: String = ""
 
 
@@ -26,7 +26,11 @@ class DataViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.dataLabel!.text = dataObject
+        guard let dlabel = self.dataLabel else {
+            print("ERROR: The dataLabel is nil")
+            return
+        }
+        dlabel.text = dataObject
     }
 
 

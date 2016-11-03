@@ -2,7 +2,7 @@
 //  ModelController.swift
 //  Midterm
 //
-//  Created by Locker,Todd on 11/2/16.
+//  Created by Locker,Todd (TRL43) on 11/2/16.
 //  Copyright © 2016 Locker,Todd. All rights reserved.
 //
 
