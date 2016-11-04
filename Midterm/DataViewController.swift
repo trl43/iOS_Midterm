@@ -12,25 +12,34 @@ class DataViewController: UIViewController {
 
     @IBOutlet weak var dataLabel: UILabel?
     var dataObject: String = ""
+    @IBOutlet weak var innerLabel: UILabel?
+    var textData: String = ""
 
-
+    // This is called immediately after the view successfully loads
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
+    // This is called right before the view appears. This is where the label's text is actually set.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard let dlabel = self.dataLabel else {
-            print("ERROR: The dataLabel is nil")
+        
+        // Guard added by TRL43
+        guard let dLabel = self.dataLabel else {
+            print("ERROR: Could not unwrap the dataLabel")
             return
         }
-        dlabel.text = dataObject
+        
+        // Guard added by TRL43
+        guard let iLabel = self.innerLabel else {
+            print("ERROR: Could not unwrap the innerLabel")
+            return
+        }
+        
+        dLabel.text = dataObject
+        iLabel.text = textData
+        
     }
 
 

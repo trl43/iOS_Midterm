@@ -20,6 +20,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         // Configure the page view controller and add it as a child view controller.
         self.pageViewController = UIPageViewController(transitionStyle: .pageCurl, navigationOrientation: .horizontal, options: nil)
         
+        // Guard added by TRL43
         guard let pvc = self.pageViewController else {
             print("ERROR: Could not unwrap the pageViewController")
             return
@@ -27,11 +28,13 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         
         pvc.delegate = self
         
+        // Guard added by TRL43
         guard let board = self.storyboard else {
             print("ERROR: Could not unwrap storyboard")
             return
         }
         
+        // Guard added by TRL43
         guard let ind = self.modelController.viewControllerAtIndex(0, storyboard: board) else {
             print("ERROR: Could not unwrap viewControllerAtIndex")
             return
@@ -68,6 +71,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
             _modelController = ModelController()
         }
         
+        // Guard added by TRL43
         guard let mc = _modelController else {
             print("ERROR: Could not unwrap _modelController")
             return ModelController()
@@ -81,6 +85,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
     // MARK: - UIPageViewController delegate methods
 
     func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
+        // Guard added by TRL43
         guard let pvc = self.pageViewController else {
             print("ERROR: No pageViewController")
             return .none
@@ -88,6 +93,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         
         if (orientation == .portrait) || (orientation == .portraitUpsideDown) || (UIDevice.current.userInterfaceIdiom == .phone) {
             // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewControllerSpineLocationMid' in landscape orientation sets the doubleSided property to true, so set it to false here.
+            // Guard added by TRL43
             guard let currentViewController = pvc.viewControllers?[0] else {
                 print("ERROR: Could not get index 0 of viewController")
                 return .none
@@ -100,6 +106,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         }
 
         // In landscape orientation: Set set the spine location to "mid" and the page view controller's view controllers array to contain two view controllers. If the current page is even, set it to contain the current and next view controllers; if it is odd, set the array to contain the previous and current view controllers.
+        // Guard added by TRL43
         guard let currentViewController = pvc.viewControllers![0] as? DataViewController else {
             print("ERROR Could not complete cast")
             return .none

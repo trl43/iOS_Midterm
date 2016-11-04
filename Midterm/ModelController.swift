@@ -17,17 +17,18 @@ import UIKit
  There is no need to actually create view controllers for each page in advance -- indeed doing so incurs unnecessary overhead. Given the data model, these methods create, configure, and return a new view controller on demand.
  */
 
-
 class ModelController: NSObject, UIPageViewControllerDataSource {
 
+    // pageData holds the titles of the pages
     var pageData: [String] = []
-
-
+    // pageText holds the main text content of the mpages
+    var pageText: [String] = []
+    
+    // Initialize the data. I am using cooking instructions. pageData is the page title and pageText is the actual instructions.
     override init() {
         super.init()
-        // Create the data model.
-        let dateFormatter = DateFormatter()
-        pageData = dateFormatter.monthSymbols
+        pageData = ["Pizza!", "Step 1", "Step 2", "Step 3", "Step 4", "Step 5", "Step 6"]
+        pageText = ["Instructions for cooking easy pizzas. Preheat oven to 400.", "Lay out the premade pizza crust and lightly coat it in vegetable oil.", "Spread pizza sauce evenly on the crust.", "Spread cheese evenly on top of the sauce.", "Add any toppings you want.", "Cook for about 10 minutes.", "Eat and Enjoy!"]
     }
 
     func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
@@ -44,6 +45,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
             return nil
         }
         dataViewController.dataObject = self.pageData[index]
+        dataViewController.textData = self.pageText[index]
         return dataViewController
     }
 
@@ -72,7 +74,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         // Guard added by TRL43
         guard let story = viewController.storyboard else {
             print(#function)
-            print("ERROR: No Storyboard")
+            print("ERROR: Could not unwrap storyboard")
             return nil
         }
         return self.viewControllerAtIndex(index, storyboard: story)
@@ -99,7 +101,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         // Guard added by TRL43
         guard let story = viewController.storyboard else {
             print(#function)
-            print("ERROR: No Storyboard")
+            print("ERROR: Could not unwrap storyboard")
             return nil
         }
         
