@@ -18,7 +18,7 @@ class DataViewController: UIViewController {
     // This is called immediately after the view successfully loads
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        // Nothing else to do here because everything was initialized in ModelController.swift
     }
 
     // This is called right before the view appears. This is where the label's text is actually set.
@@ -37,8 +37,8 @@ class DataViewController: UIViewController {
             return
         }
         
-        dLabel.text = dataObject
-        iLabel.text = textData
+        dLabel.text = self.dataObject
+        iLabel.text = self.textData
     }
 }
 
