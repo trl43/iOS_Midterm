@@ -39,9 +39,6 @@ class DataViewController: UIViewController {
         
         dLabel.text = dataObject
         iLabel.text = textData
-        
     }
-
-
 }
 
